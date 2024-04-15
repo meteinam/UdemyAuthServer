@@ -60,8 +60,8 @@ namespace UdemyAuthServer.Service.Services
         }
         public TokenDto CreateToken(UserApp userApp)
         {
-            var acccessTokenExpiration = DateTime.Now.AddMinutes(_customTokenOptions.AccessTokenExpiration);
-            var refreshTokenExpiration = DateTime.Now.AddMinutes(_customTokenOptions.RefreshTokenExpiration);
+            var acccessTokenExpiration = DateTime.Now.AddMinutes(30);
+            var refreshTokenExpiration = DateTime.Now.AddMinutes(30);
             var securityKey=SignService.GetSymmetricSecurityKey(_customTokenOptions.SecurityKey);
             SigningCredentials signingCredentials = new SigningCredentials(securityKey,SecurityAlgorithms.HmacSha256Signature);
             JwtSecurityToken jwtSecurityToken = new JwtSecurityToken(
