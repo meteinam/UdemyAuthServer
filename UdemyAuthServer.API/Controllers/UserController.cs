@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SharedLibrary.Exceptions;
 using UdemyAuthServer.Core.DTOs;
 using UdemyAuthServer.Core.Services;
 

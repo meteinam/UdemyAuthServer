@@ -1,7 +1,10 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SharedLibrary.Configuration;
+using SharedLibrary.Extensions;
+using SharedLibrary.Services;
 using UdemyAuthServer.Core.Configuration;
 using UdemyAuthServer.Core.Models;
 using UdemyAuthServer.Core.Repositories;
@@ -18,11 +21,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+
+
+builder.Services.AddControllers().AddFluentValidation(options =>
+{
+    options.RegisterValidatorsFromAssemblyContaining<Program>();
+});
+
 builder.Services.AddSwaggerGen();
 
 
 builder.Services.Configure<CustomTokenOptions>(builder.Configuration.GetSection("TokenOptions"));
-var tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<CustomTokenOptions>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -51,6 +61,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opt =>
 {
+    var tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<CustomTokenOptions>();
     opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
     {
         ValidIssuer = tokenOptions.Issuer,
@@ -65,6 +76,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.UseCustomValidationResponse();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -73,6 +86,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCustomException();
 
 app.UseHttpsRedirection();
 

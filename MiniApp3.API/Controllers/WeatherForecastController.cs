@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MiniApp3.API.Controllers
 {
+    
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
